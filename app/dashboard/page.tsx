@@ -6,11 +6,11 @@ import { PollCard } from "@/components/polls/poll-card"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Poll } from "@/types"
+import { Poll, User } from "@/types"
 import { Plus, TrendingUp, Users, Vote, Calendar, BarChart3, Eye, Edit } from "lucide-react"
 
 // Mock user data - replace with actual auth
-const mockUser = {
+const mockUser: User = {
   id: "user1",
   name: "John Doe",
   email: "john@example.com",

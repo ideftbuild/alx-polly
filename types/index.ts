@@ -2,7 +2,7 @@ export interface User {
   id: string;
   email: string;
   name: string;
-  avatar?: string;
+  avatar?: string | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -17,7 +17,7 @@ export interface PollOption {
 export interface Poll {
   id: string;
   title: string;
-  description?: string;
+  description?: string | null;
   options: PollOption[];
   creatorId: string;
   creator?: User;

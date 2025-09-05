@@ -11,12 +11,10 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
-import type { Metadata } from "next";
 import Link from "next/link";
 import { AuthProvider } from "@/providers/auth-provider";
 import { Button } from "@/components/ui/button";
 import { Vote, User, BarChart3, Plus } from "lucide-react";
-import "./globals.css";
 import { ThemeProvider } from "@/providers/theme-provider";
 
 export const metadata: Metadata = {
