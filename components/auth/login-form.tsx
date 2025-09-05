@@ -12,6 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+ import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 
@@ -20,6 +21,7 @@ export function LoginForm() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const { session } = useAuth();
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -36,7 +38,13 @@ export function LoginForm() {
       if (error) {
         setError(error.message);
       } else {
-        router.push("/dashboard");
+        // Get the updated session to ensure it's established
+        if (session) {
+          router.push("/dashboard");
+        } else {
+          console.error("Session not established after login");
+          setError("Login successful but session not established. Please try again.");
+        }
       }
     } catch (error) {
       setError("An unexpected error occurred.");
