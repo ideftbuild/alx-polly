@@ -18,7 +18,7 @@ import { Vote, User, BarChart3, Plus } from "lucide-react";
 import { ThemeProvider } from "@/providers/theme-provider";
 
 export const metadata: Metadata = {
-  title: "Alx Polly - Create and Vote on Polls",
+  title: "polivois - Create and Vote on Polls",
   description: "Create engaging polls and gather opinions from your community",
 };
 
@@ -30,7 +30,7 @@ function Navigation() {
           <div className="flex items-center space-x-8">
             <Link href="/" className="flex items-center space-x-2">
               <Vote className="h-6 w-6 text-primary" />
-              <span className="text-xl font-bold">Alx Polly</span>
+              <span className="text-xl font-bold">polivois</span>
             </Link>
             <div className="hidden md:flex items-center space-x-6">
               <Link
@@ -86,7 +86,7 @@ function Footer() {
           <div className="space-y-3">
             <div className="flex items-center space-x-2">
               <Vote className="h-5 w-5 text-primary" />
-              <span className="font-bold">Alx Polly</span>
+              <span className="font-bold">polivois</span>
             </div>
             <p className="text-sm text-muted-foreground">
               Create engaging polls and gather opinions from your community.
@@ -161,7 +161,7 @@ function Footer() {
         </div>
 
         <div className="mt-8 pt-8 border-t text-center text-sm text-muted-foreground">
-          <p>&copy; 2024 Alx Polly. All rights reserved.</p>
+          <p>&copy; 2024 polivois. All rights reserved.</p>
         </div>
       </div>
     </footer>

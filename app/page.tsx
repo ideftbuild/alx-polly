@@ -23,7 +23,7 @@ export default function Home() {
         <div className="container mx-auto text-center dark:text-black">
           <div className="max-w-3xl mx-auto space-y-8">
             <Badge variant="outline" className="text-sm px-4 py-2 dark:text-black">
-              🎉 Welcome to Alx Polly
+              🎉 Welcome to polivois
             </Badge>
 
             <h1 className="text-4xl md:text-6xl font-bold tracking-tight">
@@ -68,7 +68,7 @@ export default function Home() {
         <div className="container mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Why Choose Alx Polly?
+              Why Choose polivois?
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Everything you need to create, share, and analyze polls
@@ -202,7 +202,7 @@ export default function Home() {
               How It Works
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Get started with Alx Polly in three simple steps
+              Get started with polivois in three simple steps
             </p>
           </div>
 
@@ -251,7 +251,7 @@ export default function Home() {
               Ready to Get Started?
             </h2>
             <p className="text-xl opacity-90">
-              Join thousands of users who trust Alx Polly for their polling
+              Join thousands of users who trust polivois for their polling
               needs. Create your first poll today and see the difference.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">

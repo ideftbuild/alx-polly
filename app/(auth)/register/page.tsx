@@ -12,7 +12,7 @@ export default function RegisterPage() {
             Create your account
           </h1>
           <p className="mt-2 text-muted-foreground">
-            Join Alx Polly to create and vote on polls
+            Join polivois to create and vote on polls
           </p>
         </div>
 
