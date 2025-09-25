@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Poll } from "@/types"
 import { Search, Plus, Filter, TrendingUp } from "lucide-react"
+import { isPollActive } from "@/lib/poll-utils"
 
 // Mock data - replace with actual API calls
 const mockPolls: Poll[] = [
@@ -24,12 +25,10 @@ const mockPolls: Poll[] = [
     ],
     creatorId: "user1",
     creator: { id: "user1", name: "John Doe", email: "john@example.com", avatar: null, createdAt: new Date(), updatedAt: new Date() },
-    isActive: true,
     allowMultipleVotes: false,
     expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-    updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-    totalVotes: 140
+    updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000)
   },
   {
     id: "2",
@@ -43,11 +42,9 @@ const mockPolls: Poll[] = [
     ],
     creatorId: "user2",
     creator: { id: "user2", name: "Jane Smith", email: "jane@example.com", avatar: null, createdAt: new Date(), updatedAt: new Date() },
-    isActive: true,
     allowMultipleVotes: true,
     createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
-    updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
-    totalVotes: 40
+    updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000)
   },
   {
     id: "3",
@@ -60,12 +57,10 @@ const mockPolls: Poll[] = [
     ],
     creatorId: "user3",
     creator: { id: "user3", name: "Mike Johnson", email: "mike@example.com", avatar: null, createdAt: new Date(), updatedAt: new Date() },
-    isActive: false,
     allowMultipleVotes: false,
     expiresAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
     createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
-    updatedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
-    totalVotes: 55
+    updatedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000)
   }
 ]
 
@@ -100,15 +95,9 @@ export default function PollsPage() {
 
     // Apply status filter
     if (activeFilter === "active") {
-      filtered = filtered.filter(poll => {
-        const isExpired = poll.expiresAt && new Date(poll.expiresAt) < new Date()
-        return poll.isActive && !isExpired
-      })
+      filtered = filtered.filter(poll => isPollActive(poll))
     } else if (activeFilter === "expired") {
-      filtered = filtered.filter(poll => {
-        const isExpired = poll.expiresAt && new Date(poll.expiresAt) < new Date()
-        return !poll.isActive || isExpired
-      })
+      filtered = filtered.filter(poll => !isPollActive(poll))
     }
 
     // Apply search filter
@@ -136,15 +125,9 @@ export default function PollsPage() {
     window.location.href = `/polls/${pollId}`
   }
 
-  const getActivePolls = () => polls.filter(poll => {
-    const isExpired = poll.expiresAt && new Date(poll.expiresAt) < new Date()
-    return poll.isActive && !isExpired
-  })
+  const getActivePolls = () => polls.filter(poll => isPollActive(poll))
 
-  const getExpiredPolls = () => polls.filter(poll => {
-    const isExpired = poll.expiresAt && new Date(poll.expiresAt) < new Date()
-    return !poll.isActive || isExpired
-  })
+  const getExpiredPolls = () => polls.filter(poll => !isPollActive(poll))
 
   if (isLoading) {
     return (
@@ -313,7 +296,7 @@ export default function PollsPage() {
               poll={poll}
               onView={() => handlePollView(poll.id)}
               onVote={() => handlePollVote(poll.id)}
-              showResults={!poll.isActive || (poll.expiresAt && new Date(poll.expiresAt) < new Date())}
+              showResults={!isPollActive(poll)}
             />
           ))}
         </div>

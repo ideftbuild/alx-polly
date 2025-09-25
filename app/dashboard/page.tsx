@@ -8,12 +8,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Poll, User } from "@/types"
 import { Plus, TrendingUp, Users, Vote, Calendar, BarChart3, Eye, Edit } from "lucide-react"
+import { isPollActive, getPollTotalVotes } from "@/lib/poll-utils"
 
 // Mock user data - replace with actual auth
 const mockUser: User = {
   id: "user1",
   name: "John Doe",
-  email: "john@example.com",
   avatar: null,
   createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
   updatedAt: new Date()
@@ -32,13 +32,9 @@ const mockUserPolls: Poll[] = [
       { id: "1d", text: "TypeScript", votes: 35, pollId: "1" }
     ],
     creatorId: "user1",
-    creator: mockUser,
-    isActive: true,
-    allowMultipleVotes: false,
     expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
     updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-    totalVotes: 140
   },
   {
     id: "4",
@@ -51,13 +47,9 @@ const mockUserPolls: Poll[] = [
       { id: "4d", text: "Remote first", votes: 8, pollId: "4" }
     ],
     creatorId: "user1",
-    creator: mockUser,
-    isActive: false,
-    allowMultipleVotes: true,
     expiresAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
     createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
     updatedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
-    totalVotes: 63
   },
   {
     id: "5",
@@ -70,14 +62,12 @@ const mockUserPolls: Poll[] = [
       { id: "5d", text: "Cooking class", votes: 11, pollId: "5" }
     ],
     creatorId: "user1",
-    creator: mockUser,
-    isActive: true,
-    allowMultipleVotes: false,
     createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
     updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
-    totalVotes: 42
   }
 ]
+
+// Helper functions are now imported from lib/poll-utils
 
 export default function DashboardPage() {
   const [userPolls, setUserPolls] = useState<Poll[]>([])
@@ -103,18 +93,11 @@ export default function DashboardPage() {
   }, [])
 
   const getFilteredPolls = () => {
-    const now = new Date()
     switch (activeTab) {
       case "active":
-        return userPolls.filter(poll => {
-          const isExpired = poll.expiresAt && new Date(poll.expiresAt) < now
-          return poll.isActive && !isExpired
-        })
+        return userPolls.filter(poll => isPollActive(poll))
       case "expired":
-        return userPolls.filter(poll => {
-          const isExpired = poll.expiresAt && new Date(poll.expiresAt) < now
-          return !poll.isActive || isExpired
-        })
+        return userPolls.filter(poll => !isPollActive(poll))
       default:
         return userPolls
     }
@@ -122,11 +105,8 @@ export default function DashboardPage() {
 
   const getStats = () => {
     const totalPolls = userPolls.length
-    const totalVotes = userPolls.reduce((sum, poll) => sum + poll.totalVotes, 0)
-    const activePolls = userPolls.filter(poll => {
-      const isExpired = poll.expiresAt && new Date(poll.expiresAt) < new Date()
-      return poll.isActive && !isExpired
-    }).length
+    const totalVotes = userPolls.reduce((sum, poll) => sum + getPollTotalVotes(poll), 0)
+    const activePolls = userPolls.filter(poll => isPollActive(poll)).length
     const avgVotesPerPoll = totalPolls > 0 ? Math.round(totalVotes / totalPolls) : 0
 
     return { totalPolls, totalVotes, activePolls, avgVotesPerPoll }
@@ -269,14 +249,14 @@ export default function DashboardPage() {
                       <div className="flex items-center space-x-4 text-sm text-muted-foreground mt-1">
                         <div className="flex items-center space-x-1">
                           <Vote className="h-3 w-3" />
-                          <span>{poll.totalVotes} votes</span>
+                          <span>{getPollTotalVotes(poll)} votes</span>
                         </div>
                         <div className="flex items-center space-x-1">
                           <Calendar className="h-3 w-3" />
                           <span>{new Date(poll.createdAt).toLocaleDateString()}</span>
                         </div>
-                        <Badge variant={poll.isActive ? "default" : "secondary"} className="text-xs">
-                          {poll.isActive ? "Active" : "Inactive"}
+                        <Badge variant={isPollActive(poll) ? "default" : "secondary"} className="text-xs">
+                          {isPollActive(poll) ? "Active" : "Inactive"}
                         </Badge>
                       </div>
                     </div>

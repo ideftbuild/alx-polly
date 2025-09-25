@@ -62,12 +62,10 @@ export const usePolls = (options: UsePollsOptions = {}): UsePollsReturn => {
             createdAt: new Date(),
             updatedAt: new Date()
           },
-          isActive: true,
           allowMultipleVotes: false,
           expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
           createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
           updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-          totalVotes: 140
         },
         {
           id: "2",
@@ -88,11 +86,9 @@ export const usePolls = (options: UsePollsOptions = {}): UsePollsReturn => {
             createdAt: new Date(),
             updatedAt: new Date()
           },
-          isActive: true,
           allowMultipleVotes: true,
           createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
           updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
-          totalVotes: 40
         }
       ]
 
@@ -162,12 +158,10 @@ export const usePolls = (options: UsePollsOptions = {}): UsePollsReturn => {
           createdAt: new Date(),
           updatedAt: new Date()
         },
-        isActive: true,
         allowMultipleVotes: data.allowMultipleVotes,
         expiresAt: data.expiresAt,
         createdAt: new Date(),
         updatedAt: new Date(),
-        totalVotes: 0
       }
 
       // Add to polls list
@@ -343,12 +337,10 @@ export const usePoll = (pollId: string) => {
             createdAt: new Date(),
             updatedAt: new Date()
           },
-          isActive: true,
           allowMultipleVotes: false,
           expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
           createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
           updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-          totalVotes: 140
         }
         setPoll(mockPoll)
       } else {
@@ -382,7 +374,6 @@ export const usePoll = (pollId: string) => {
       const updatedPoll: Poll = {
         ...poll,
         options: updatedOptions,
-        totalVotes: poll.totalVotes + optionIds.length,
         updatedAt: new Date()
       }
 

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
 import { Calendar, Users, Vote } from "lucide-react"
+import { isPollActive, getPollTotalVotes, getTopOption } from "@/lib/poll-utils"
 
 interface PollCardProps {
   poll: Poll
@@ -23,7 +24,7 @@ export function PollCard({
   className
 }: PollCardProps) {
   const isExpired = poll.expiresAt && new Date(poll.expiresAt) < new Date()
-  const canVote = poll.isActive && !isExpired
+  const canVote = isPollActive(poll) && !isExpired
 
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat('en-US', {
@@ -33,14 +34,7 @@ export function PollCard({
     }).format(new Date(date))
   }
 
-  const getTopOption = () => {
-    if (poll.options.length === 0) return null
-    return poll.options.reduce((prev, current) =>
-      prev.votes > current.votes ? prev : current
-    )
-  }
-
-  const topOption = getTopOption()
+  const topOption = getTopOption(poll)
 
   return (
     <Card className={`hover:shadow-lg transition-shadow ${className}`}>
@@ -63,12 +57,12 @@ export function PollCard({
       </CardHeader>
 
       <CardContent className="space-y-4">
-        {showResults && topOption && poll.totalVotes > 0 && (
+        {showResults && topOption && getPollTotalVotes(poll) > 0 && (
           <div className="space-y-2">
             <div className="flex items-center justify-between text-sm">
               <span className="font-medium">Leading option:</span>
               <span className="text-muted-foreground">
-                {Math.round((topOption.votes / poll.totalVotes) * 100)}%
+                {Math.round((topOption.votes / getPollTotalVotes(poll)) * 100)}%
               </span>
             </div>
             <div>
@@ -76,7 +70,7 @@ export function PollCard({
                 <span className="line-clamp-1">{topOption.text}</span>
                 <span>{topOption.votes} votes</span>
               </div>
-              <Progress value={(topOption.votes / poll.totalVotes) * 100} />
+              <Progress value={(topOption.votes / getPollTotalVotes(poll)) * 100} />
             </div>
           </div>
         )}
@@ -85,7 +79,7 @@ export function PollCard({
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-1">
               <Vote className="h-4 w-4" />
-              <span>{poll.totalVotes} votes</span>
+              <span>{getPollTotalVotes(poll)} votes</span>
             </div>
             <div className="flex items-center space-x-1">
               <Users className="h-4 w-4" />

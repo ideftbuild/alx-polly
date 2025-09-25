@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge"
 import { Poll } from "@/types"
 import { ArrowLeft, Share2, Edit, Trash2, BarChart3 } from "lucide-react"
 import Link from "next/link"
+import { isPollActive, getPollTotalVotes } from "@/lib/poll-utils"
 
 // Mock data - replace with actual API calls
 const mockPoll: Poll = {
@@ -32,12 +33,10 @@ const mockPoll: Poll = {
     createdAt: new Date(),
     updatedAt: new Date()
   },
-  isActive: true,
   allowMultipleVotes: false,
   expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
   createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-  updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-  totalVotes: 170
+  updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000)
 }
 
 interface PollPageProps {
@@ -117,7 +116,7 @@ export default function PollPage() {
         ...option,
         votes: optionIds.includes(option.id) ? option.votes + 1 : option.votes
       }))
-      updatedPoll.totalVotes = updatedPoll.totalVotes + optionIds.length
+      // Total votes are calculated dynamically from options
 
       setPoll(updatedPoll)
       setUserVotes(optionIds)
@@ -185,7 +184,7 @@ export default function PollPage() {
 
   const isOwner = poll && currentUserId === poll.creatorId
   const isExpired = poll?.expiresAt && new Date(poll.expiresAt) < new Date()
-  const canVote = poll?.isActive && !isExpired && !hasVoted
+  const canVote = poll ? isPollActive(poll) && !isExpired && !hasVoted : false
 
   if (isLoading) {
     return (
@@ -316,7 +315,7 @@ export default function PollPage() {
               </div>
               <div>
                 <span className="font-medium">Total votes:</span>
-                <span className="ml-2 font-bold">{poll.totalVotes}</span>
+                <span className="ml-2 font-bold">{getPollTotalVotes(poll)}</span>
               </div>
               {poll.expiresAt && (
                 <div>
@@ -337,8 +336,8 @@ export default function PollPage() {
             </div>
 
             <div className="flex flex-wrap gap-2">
-              <Badge variant={poll.isActive && !isExpired ? "default" : "secondary"}>
-                {poll.isActive && !isExpired ? "Active" : isExpired ? "Expired" : "Inactive"}
+              <Badge variant={isPollActive(poll) && !isExpired ? "default" : "secondary"}>
+                {isPollActive(poll) && !isExpired ? "Active" : isExpired ? "Expired" : "Inactive"}
               </Badge>
               {poll.allowMultipleVotes && (
                 <Badge variant="outline">

@@ -10,6 +10,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { Vote, Users, Calendar } from "lucide-react"
+import { isPollActive, getPollTotalVotes, getVotePercentage } from "@/lib/poll-utils"
 
 interface PollVotingProps {
   poll: Poll
@@ -32,7 +33,7 @@ export function PollVoting({
   const [hasVoted, setHasVoted] = useState(userVotes.length > 0)
 
   const isExpired = poll.expiresAt && new Date(poll.expiresAt) < new Date()
-  const canVote = poll.isActive && !isExpired && !hasVoted
+  const canVote = isPollActive(poll) && !isExpired && !hasVoted
 
   const handleSingleSelect = (optionId: string) => {
     setSelectedOptions([optionId])
@@ -67,9 +68,9 @@ export function PollVoting({
     }).format(new Date(date))
   }
 
-  const getVotePercentage = (option: PollOption) => {
-    if (poll.totalVotes === 0) return 0
-    return Math.round((option.votes / poll.totalVotes) * 100)
+  const getOptionVotePercentage = (option: PollOption) => {
+    const totalVotes = getPollTotalVotes(poll)
+    return getVotePercentage(option.votes, totalVotes)
   }
 
   const sortedOptions = [...poll.options].sort((a, b) => {
@@ -98,7 +99,7 @@ export function PollVoting({
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-1">
               <Vote className="h-4 w-4" />
-              <span>{poll.totalVotes} total votes</span>
+              <span>{getPollTotalVotes(poll)} total votes</span>
             </div>
             <div className="flex items-center space-x-1">
               <Users className="h-4 w-4" />
@@ -199,14 +200,14 @@ export function PollVoting({
                     </div>
                     <div className="flex items-center space-x-2 text-sm">
                       <span className="font-medium">
-                        {getVotePercentage(option)}%
+                        {getOptionVotePercentage(option)}%
                       </span>
                       <span className="text-muted-foreground">
                         ({option.votes} votes)
                       </span>
                     </div>
                   </div>
-                  <Progress value={getVotePercentage(option)} className="h-2" />
+                  <Progress value={getOptionVotePercentage(option)} className="h-2" />
                 </div>
               ))}
             </div>
