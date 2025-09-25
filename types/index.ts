@@ -1,6 +1,5 @@
 export interface User {
   id: string;
-  email: string;
   name: string;
   avatar?: string | null;
   createdAt: Date;
@@ -20,13 +19,9 @@ export interface Poll {
   description?: string | null;
   options: PollOption[];
   creatorId: string;
-  creator?: User;
-  isActive: boolean;
-  allowMultipleVotes: boolean;
   expiresAt?: Date;
   createdAt: Date;
   updatedAt: Date;
-  totalVotes: number;
 }
 
 export interface Vote {
@@ -41,7 +36,6 @@ export interface CreatePollData {
   title: string;
   description?: string;
   options: string[];
-  allowMultipleVotes: boolean;
   expiresAt?: Date;
 }
 
